@@ -1,31 +1,27 @@
-﻿# kill-app.ps1
-# Tournament helper: close ONLY explicitly listed applications.
-# Review and customize $BlockedProcessNames before use.
-# Does not disable Windows, networking, audio, or GPU driver services.
-
-$ErrorActionPreference = "SilentlyContinue"
-
-$BlockedProcessNames = @(
-    # Add confirmed prohibited app process names here, without ".exe".
-    # Example: "examplecheat"
-)
+# kill-app.ps1
+param([string[]]$BlockedProcessNames = @())
 
 if ($BlockedProcessNames.Count -eq 0) {
-    Write-Host "No blocked process names configured." -ForegroundColor Yellow
-    Write-Host "Edit `$BlockedProcessNames in this script and add verified process names."
+    Write-Host "Chua co app nao. Dung: -BlockedProcessNames 'app1','app2'" -ForegroundColor Yellow
     Read-Host "Press Enter to exit"
-    exit
+    return
 }
 
-foreach ($name in $BlockedProcessNames) {
-    Get-Process -Name $name -ErrorAction SilentlyContinue | ForEach-Object {
+foreach ($raw in $BlockedProcessNames) {
+    $name = $raw -replace '\.exe$', ''
+    if ($name -match '[\*\?]') { Write-Host "Bo qua wildcard: $raw" -ForegroundColor Yellow; continue }
+
+    $procs = Get-Process -Name $name -ErrorAction SilentlyContinue
+    if (-not $procs) { Write-Host "Khong chay: $name" -ForegroundColor DarkGray; continue }
+
+    foreach ($p in $procs) {
         try {
-            Stop-Process -Id $_.Id -Force -ErrorAction Stop
-            Write-Host ("Closed process: " + $_.ProcessName) -ForegroundColor Green
+            Stop-Process -Id $p.Id -Force -ErrorAction Stop
+            Write-Host "Da tat: $($p.ProcessName)" -ForegroundColor Green
         } catch {
-            Write-Host ("Could not close: " + $_.ProcessName) -ForegroundColor Yellow
+            Write-Host "Khong tat duoc $($p.ProcessName): $($_.Exception.Message)" -ForegroundColor Yellow
         }
     }
 }
-Write-Host "Finished. This only closes listed processes; it does not prevent relaunch or prove cheating." -ForegroundColor Cyan
-Read-Host "Press Enter to exit"
+
+Write-Host "Xong. Script chi tat app dang chay, khong chan mo lai." -ForegroundColor Cyan
