@@ -10,7 +10,6 @@ $Allowed = @(
 
 $session = (Get-Process -Id $PID).SessionId
 Write-Host "Dang chay: chi cho phep Steam + Play Together." -ForegroundColor Cyan
-Write-Host "Dung lai: nhan Ctrl+C hoac dong cua so nay." -ForegroundColor Cyan
 
 while ($true) {
     Get-Process | Where-Object {
