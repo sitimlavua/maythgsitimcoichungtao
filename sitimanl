@@ -1,7 +1,9 @@
-# ===== Chi cho phep Steam + Play Together =====
+# ===== Chi cho phep Steam + Play Together + Discord =====
 $Allowed = @(
     # Game
     "steam*", "gameoverlayui*", "PlayTogether*", "NVIDIA*",
+    # Discord
+    "Discord*",
     # He thong (KHONG xoa)
     "explorer", "powershell", "pwsh", "WindowsTerminal", "conhost", "cmd", "taskmgr",
     "dwm", "ApplicationFrameHost", "ShellExperienceHost", "StartMenuExperienceHost",
@@ -9,7 +11,7 @@ $Allowed = @(
 )
 
 $session = (Get-Process -Id $PID).SessionId
-Write-Host "Dang chay: chi cho phep Steam + Play Together." -ForegroundColor Cyan
+Write-Host "Dang chay: chi cho phep Steam + Play Together + Discord." -ForegroundColor Cyan
 
 while ($true) {
     Get-Process | Where-Object {
