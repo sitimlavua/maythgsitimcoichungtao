@@ -1,1 +1,28 @@
+# ===== Chi cho phep Steam + Play Together =====
+$Allowed = @(
+    # Game
+    "steam*", "gameoverlayui*", "PlayTogether*", "NVIDIA*",
+    # He thong (KHONG xoa)
+    "explorer", "powershell", "pwsh", "WindowsTerminal", "conhost", "cmd", "taskmgr",
+    "dwm", "ApplicationFrameHost", "ShellExperienceHost", "StartMenuExperienceHost",
+    "SearchHost", "TextInputHost", "LockApp", "SystemSettings", "ctfmon", "sihost"
+)
 
+$session = (Get-Process -Id $PID).SessionId
+Write-Host "Dang chay: chi cho phep Steam + Play Together." -ForegroundColor Cyan
+Write-Host "Dung lai: nhan Ctrl+C hoac dong cua so nay." -ForegroundColor Cyan
+
+while ($true) {
+    Get-Process | Where-Object {
+        $_.MainWindowHandle -ne 0 -and $_.SessionId -eq $session -and $_.Id -ne $PID
+    } | ForEach-Object {
+        $name = $_.ProcessName
+        $ok = $false
+        foreach ($a in $Allowed) { if ($name -like $a) { $ok = $true; break } }
+        if (-not $ok) {
+            Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue
+            Write-Host "Da tat: $name" -ForegroundColor Green
+        }
+    }
+    Start-Sleep -Milliseconds 700
+}
