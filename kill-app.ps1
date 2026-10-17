@@ -1,5 +1,5 @@
 # kill-app.ps1
-param([string[]]$BlockedProcessNames = @())
+$BlockedProcessNames = @("notepad", "calc")
 
 if ($BlockedProcessNames.Count -eq 0) {
     Write-Host "Chua co app nao. Dung: -BlockedProcessNames 'app1','app2'" -ForegroundColor Yellow
